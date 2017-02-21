@@ -6,14 +6,16 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import itchat
+import logging
 import requests
 from itchat.content import *
 
 
-def tuling(text):
+def tuling(text, user):
     data = {
         'key': 'a5dda1dcd346464090f6195eee757b4c',
         'info': text,
+        'userid': user.lstrip('@'),
     }
     received = requests.post('http://www.tuling123.com/openapi/api', data=data).json()
     return received.get('text')
@@ -21,7 +23,7 @@ def tuling(text):
 
 @itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
 def text_reply(msg):
-    itchat.send(tuling(msg['Text']), msg['FromUserName'])
+    itchat.send(tuling(msg['Text'], msg['FromUserName']), msg['FromUserName'])
 
 
 @itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
@@ -44,7 +46,7 @@ def text_reply(msg):
         if u'高阳' in msg['Text']:
             itchat.send(u'高阳大和尚', msg['FromUserName'])
         else:
-            rep = tuling(msg['Text'].strip('@Router'))
+            rep = tuling(msg['Text'].strip('@Router'), msg['FromUserName'])
             itchat.send(rep, msg['FromUserName'])
 
 itchat.auto_login(hotReload=True, enableCmdQR=2)
