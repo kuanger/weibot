@@ -15,8 +15,9 @@ def tuling(text, user):
     data = {
         'key': 'a5dda1dcd346464090f6195eee757b4c',
         'info': text,
-        'userid': user.lstrip('@'),
+        'userid': user.lstrip('@')[:32],
     }
+    logging.error(data)
     received = requests.post('http://www.tuling123.com/openapi/api', data=data).json()
     return received.get('text')
 
@@ -40,6 +41,7 @@ def add_friend(msg):
 
 @itchat.msg_register(TEXT, isGroupChat=True)
 def text_reply(msg):
+    logging.error(msg)
     if msg['isAt']:
         if u'老闷儿' in msg['Text']:
             itchat.send(u'老闷儿小胖墩', msg['FromUserName'])
